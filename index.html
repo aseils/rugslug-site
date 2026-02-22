@@ -290,7 +290,23 @@
       font-size:12px;
       margin-left:8px;
     }
+  /* Mascot image inside a stat box */
+    .stat .value.image-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;      /* optional */
+    }
 
+    .stat .value.image-card img {
+      width: 100%;
+      max-width: 220px;      /* <-- controls how big it gets */
+      height: auto;
+      aspect-ratio: 1 / 1;   /* keep it square */
+      object-fit: contain;
+      border-radius: 12px;   /* optional */
+    }
+    
     .grid{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -457,11 +473,11 @@
 
     <div class="stat">
       <div class="label">MASCOT</div>
-      <div class="value image-card">
-      <img src="assets/RSicon.png" alt="Rug Slug">
+        <div class="value image-card">
+          <img src="assets/RSicon.png" alt="Rug Slug">
+      </div>
     </div>
-  </div>
- </div>       
+   </div>       
  
     </section>
 
