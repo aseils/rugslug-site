@@ -1,29 +1,539 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rug Slug</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rug Slug — decentralised chaos, fully intentional." />
+  <meta name="theme-color" content="#0b0b0f"/>
+
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #ffffff;
-      text-align: center;
-      padding-top: 120px;
+    :root{
+      --bg:#0b0b0f;
+      --panel:#11111a;
+      --panel2:#0f0f16;
+      --text:#f2f2ff;
+      --muted:#b7b7d1;
+      --line:rgba(255,255,255,.08);
+      --glow:rgba(255,255,255,.12);
+      --accent: #9cff57;
+      --accent2:#7aa7ff;
+      --warn:#ffcc66;
+      --shadow: 0 20px 80px rgba(0,0,0,.55);
+      --radius: 18px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
     }
-    h1 {
-      font-size: 48px;
-      margin-bottom: 20px;
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 15% 15%, rgba(122,167,255,.10), transparent 55%),
+                  radial-gradient(1000px 700px at 85% 25%, rgba(156,255,87,.10), transparent 55%),
+                  radial-gradient(900px 700px at 50% 90%, rgba(255,204,102,.07), transparent 60%),
+                  var(--bg);
+      overflow-x:hidden;
     }
-    p {
-      font-size: 18px;
-      opacity: 0.7;
+
+    /* subtle animated slug trails */
+    .trails{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      filter: blur(.2px);
     }
+    .trail{
+      position:absolute;
+      width:520px;
+      height:10px;
+      border-radius:999px;
+      background: linear-gradient(90deg, transparent, rgba(156,255,87,.55), transparent);
+      transform: rotate(-12deg);
+      animation: drift 14s linear infinite;
+      opacity:.6;
+      mix-blend-mode: screen;
+    }
+    .trail:nth-child(2){
+      width:680px; height:12px;
+      background: linear-gradient(90deg, transparent, rgba(122,167,255,.55), transparent);
+      top:22%; left:-20%;
+      transform: rotate(8deg);
+      animation-duration: 18s;
+      opacity:.5;
+    }
+    .trail:nth-child(3){
+      width:760px; height:9px;
+      background: linear-gradient(90deg, transparent, rgba(255,204,102,.50), transparent);
+      top:68%; left:-35%;
+      transform: rotate(-6deg);
+      animation-duration: 22s;
+      opacity:.45;
+    }
+    .trail:nth-child(1){ top:42%; left:-30%; }
+    @keyframes drift{
+      0%{ transform: translateX(-10%) rotate(-12deg); }
+      100%{ transform: translateX(160%) rotate(-12deg); }
+    }
+
+    header{
+      position:sticky;
+      top:0;
+      z-index:20;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(to bottom, rgba(11,11,15,.78), rgba(11,11,15,.30));
+      border-bottom:1px solid var(--line);
+    }
+    .nav{
+      max-width:1100px;
+      margin:0 auto;
+      padding:14px 18px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      letter-spacing:.4px;
+    }
+    .badge{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--accent) 45%, rgba(156,255,87,.2) 70%);
+      box-shadow: 0 0 18px rgba(156,255,87,.35);
+    }
+    .links{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      text-decoration:none;
+      font-weight:600;
+      font-size:14px;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+      user-select:none;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(255,255,255,.14);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(156,255,87,.18), rgba(122,167,255,.14));
+      border-color: rgba(156,255,87,.25);
+      box-shadow: 0 10px 40px rgba(156,255,87,.10);
+    }
+    .btn small{opacity:.8; font-weight:700; font-family:var(--mono)}
+
+    main{
+      max-width:1100px;
+      margin:0 auto;
+      padding: 34px 18px 70px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:18px;
+      align-items:stretch;
+      margin-top:18px;
+    }
+    @media (max-width: 900px){
+      .hero{ grid-template-columns: 1fr; }
+      .links{ flex-wrap:wrap; justify-content:flex-end; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-left{
+      padding:28px 26px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-left:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: radial-gradient(700px 240px at 20% 30%, rgba(156,255,87,.12), transparent 60%),
+                  radial-gradient(520px 220px at 70% 10%, rgba(122,167,255,.10), transparent 60%);
+      opacity:.9;
+      pointer-events:none;
+    }
+    .hero-left > *{ position:relative; }
+
+    h1{
+      margin:0 0 10px;
+      font-size: 54px;
+      line-height: 1.02;
+      letter-spacing: -1px;
+    }
+    .sub{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:18px;
+      line-height:1.55;
+      max-width:60ch;
+    }
+    .kicker{
+      font-family:var(--mono);
+      color: rgba(255,255,255,.78);
+      border:1px solid var(--line);
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      background: rgba(0,0,0,.18);
+      margin-bottom:14px;
+    }
+    .kicker .pill{
+      color: #0b0b0f;
+      background: var(--accent);
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+
+    .cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:16px;
+    }
+
+    .fine{
+      margin-top:16px;
+      color: rgba(255,255,255,.62);
+      font-size:13px;
+      line-height:1.55;
+      border-top:1px dashed rgba(255,255,255,.12);
+      padding-top:14px;
+      font-family:var(--mono);
+    }
+
+    .hero-right{
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .stat{
+      padding:14px 14px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(0,0,0,.15);
+    }
+    .stat .label{
+      color: rgba(255,255,255,.62);
+      font-size:12px;
+      font-family:var(--mono);
+      letter-spacing:.2px;
+    }
+    .stat .value{
+      font-size:18px;
+      margin-top:6px;
+      font-weight:800;
+    }
+    .stat .value span{
+      font-family:var(--mono);
+      font-weight:800;
+      color: rgba(255,255,255,.78);
+      font-size:12px;
+      margin-left:8px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .panel{
+      padding:18px;
+    }
+    .panel h2{
+      margin:0 0 10px;
+      font-size:18px;
+      letter-spacing:-.2px;
+    }
+    .panel p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:14px;
+    }
+    .list{
+      margin:12px 0 0;
+      padding:0;
+      list-style:none;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .list li{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(0,0,0,.14);
+    }
+    .chip{
+      font-family:var(--mono);
+      font-size:12px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color: rgba(255,255,255,.72);
+      white-space:nowrap;
+      margin-top:2px;
+    }
+    .chip.a{ border-color: rgba(156,255,87,.22); }
+    .chip.b{ border-color: rgba(122,167,255,.22); }
+    .chip.c{ border-color: rgba(255,204,102,.22); }
+    footer{
+      max-width:1100px;
+      margin:0 auto;
+      padding: 18px;
+      color: rgba(255,255,255,.55);
+      font-family:var(--mono);
+      font-size:12px;
+      border-top:1px solid var(--line);
+    }
+
+    a.inline{
+      color: rgba(156,255,87,.95);
+      text-decoration:none;
+      border-bottom:1px dotted rgba(156,255,87,.35);
+    }
+    a.inline:hover{ border-bottom-style: solid; }
+
+    /* tiny inline "slug" icon */
+    .slug{
+      width:22px; height:22px;
+      border-radius: 10px;
+      background: linear-gradient(145deg, rgba(156,255,87,.95), rgba(122,167,255,.65));
+      position:relative;
+      box-shadow: 0 0 26px rgba(156,255,87,.22);
+    }
+    .slug:before, .slug:after{
+      content:"";
+      position:absolute;
+      top:6px;
+      width:4px; height:4px;
+      border-radius:50%;
+      background: rgba(11,11,15,.85);
+    }
+    .slug:before{ left:6px; }
+    .slug:after{ left:12px; }
   </style>
 </head>
 <body>
-  <h1>Rug Slug</h1>
-  <p>Welcome to decentralised chaos.</p>
+  <div class="trails" aria-hidden="true">
+    <div class="trail"></div>
+    <div class="trail"></div>
+    <div class="trail"></div>
+  </div>
+
+  <header>
+    <div class="nav">
+      <div class="brand">
+        <div class="slug" aria-hidden="true"></div>
+        <div>Rug Slug</div>
+        <div class="badge">rugslug.xyz</div>
+      </div>
+
+      <div class="links">
+        <!-- Update these links when ready -->
+        <a class="btn primary" href="#" title="Coming soon">
+          <small>00</small> Enter the slime
+        </a>
+        <a class="btn" href="https://x.com/" target="_blank" rel="noopener">
+          <small>X</small> Follow
+        </a>
+        <a class="btn" href="#" title="Coming soon">
+          <small>DOCS</small> Lore
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="card hero-left">
+        <div class="kicker">
+          <span class="pill">NO PROMISES</span>
+          <span>Just decentralised chaos, fully intentional.</span>
+        </div>
+
+        <h1>Rug Slug</h1>
+        <p class="sub">
+          A tiny homepage for a big idea: keep it simple, ship fast, stay weird.
+          This site is the on-chain-adjacent front door — links, lore, and whatever comes next.
+        </p>
+
+        <div class="cta">
+          <a class="btn primary" href="#links">Start here</a>
+          <a class="btn" href="#roadmap">Roadmap</a>
+          <a class="btn" href="#disclaimer">Disclaimer</a>
+        </div>
+
+        <div class="fine" id="disclaimer">
+          <strong>Disclaimer:</strong> This is not financial advice. No guarantees, no expectations, no “wen”.
+          If you’re here for certainty, you took a wrong turn at the carpet store.
+        </div>
+      </div>
+
+      <div class="card hero-right">
+        <div class="stat">
+          <div class="label">STATUS</div>
+          <div class="value">LIVE <span>// v0.1</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">HOSTING</div>
+          <div class="value">Cloudflare Pages <span>// global</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">BUILD STYLE</div>
+          <div class="value">Plain HTML <span>// no fluff</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">VIBE</div>
+          <div class="value">Slightly suspicious <span>// perfect</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid" id="links">
+      <div class="card panel">
+        <h2>Links</h2>
+        <p>Wire these up when you’re ready. Keep everything in one place.</p>
+        <ul class="list">
+          <li>
+            <span class="chip a">X</span>
+            <div>
+              <div><strong>Follow the chaos</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                Add your official handle here when locked in.
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="chip b">DOCS</span>
+            <div>
+              <div><strong>Lore / Docs</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                A simple page explaining what Rug Slug is (and isn’t).
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="chip c">CA</span>
+            <div>
+              <div><strong>Contract Address</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                Only publish once final. Never “temporary CA”.
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card panel" id="roadmap">
+        <h2>Roadmap</h2>
+        <p>Keep it honest. Keep it small. Ship in public.</p>
+        <ul class="list">
+          <li>
+            <span class="chip a">v0</span>
+            <div>
+              <div><strong>Landing page</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                A real domain, a real page, a real place to point people.
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="chip b">v1</span>
+            <div>
+              <div><strong>Lore + links</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                One-page manifesto + official channels.
+              </div>
+            </div>
+          </li>
+          <li>
+            <span class="chip c">v2</span>
+            <div>
+              <div><strong>Whatever happens next</strong></div>
+              <div style="color:rgba(255,255,255,.62);font-size:13px;line-height:1.55;margin-top:2px;">
+                If it grows, it grows. If not, it still looks clean.
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div class="card panel">
+        <h2>Notes</h2>
+        <p>
+          This site is intentionally minimal: fast, durable, easy to update.
+          You can keep it static forever, or add features later.
+        </p>
+        <p style="margin-top:10px;">
+          Want IPFS mirror later? Easy. Want a subdomain for “app”? Easy.
+          Want to keep it pure meme? Also easy.
+        </p>
+        <p style="margin-top:10px;color:rgba(255,255,255,.62);font-size:13px;">
+          Tip: keep your official links consistent. Don’t rename handles mid-flight unless you’re deliberately rebranding.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="y"></span> Rug Slug. Built on plain HTML. Hosted on Cloudflare Pages.
+    <span style="opacity:.8">—</span>
+    <a class="inline" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">Back to top</a>
+  </footer>
+
+  <script>
+    // tiny year helper
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
