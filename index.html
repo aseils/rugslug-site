@@ -295,16 +295,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 10px;      /* optional */
+      padding: 12px;
+      background: rgba(0,0,0,.25);   /* gives it intentional framing */
+      border-radius: 16px;
     }
 
     .stat .value.image-card img {
-      width: 100%;
-      max-width: 220px;      /* <-- controls how big it gets */
+      width: 220px;        /* fixed clean size */
       height: auto;
-      aspect-ratio: 1 / 1;   /* keep it square */
-      object-fit: contain;
-      border-radius: 12px;   /* optional */
+      border-radius: 18px; /* smooth corners */
+      box-shadow: 0 12px 40px rgba(0,0,0,.6);
     }
     
     .grid{
