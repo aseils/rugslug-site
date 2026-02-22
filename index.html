@@ -47,7 +47,13 @@
     background: rgba(0,0,0,.25);
     border-radius: 20px;
     filter: drop-shadow(0 20px 60px rgba(0,0,0,.6));
-  }
+    transition: transform .25s ease, filter .25s ease;
+}
+
+.hero-logo:hover{
+    transform: translateY(-4px) scale(1.02);
+    filter: drop-shadow(0 25px 80px rgba(0,0,0,.75));
+}
    
     /* subtle animated slug trails */
     .trails{
